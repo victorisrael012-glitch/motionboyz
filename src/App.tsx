@@ -5,9 +5,10 @@ import { CartProvider, useCart } from './context/CartContext'
 import { NavMenu } from './components/Navbar'
 import ProductGrid from './components/ProductGrid'
 import CartDrawer from './components/CartDrawer'
-import Footer from './components/Footer'
 import heroImage from './assets/hero.jpeg'
 import migosSong from './assets/migos.wav'
+
+const SPOTIFY_URL = 'https://open.spotify.com/artist/76irK3Smknj0BHypJS65Ux?si=Ei4fBHmoSPeSYBjc7sG5xA&utm_source=copy-link'
 
 // Spotify SVG icon (official brand mark)
 function SpotifyIcon() {
@@ -93,7 +94,7 @@ function HeroControls({ onMenuOpen }: { onMenuOpen: () => void }) {
   )
 }
 
-// Full-viewport hero image — bottom anchored to show the 3 people
+// Full-viewport hero image
 function HeroSection({ onMenuOpen }: { onMenuOpen: () => void }) {
   return (
     <section
@@ -130,13 +131,19 @@ function BrandSection() {
         MB swag — are you down like that?
       </p>
 
-      {/* Spotify / track line */}
-      <div className="mt-3 flex items-center gap-2">
+      {/* Spotify link */}
+      <a
+        href={SPOTIFY_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-3 flex items-center gap-2 hover:opacity-70 transition-opacity"
+        aria-label="Listen on Spotify"
+      >
         <SpotifyIcon />
         <span className="text-sm font-semibold text-gray-700 tracking-widest uppercase">
           Migos — Out Now
         </span>
-      </div>
+      </a>
     </section>
   )
 }
@@ -163,7 +170,8 @@ function AppContent() {
         <ProductGrid />
       </main>
 
-      <Footer />
+      {/* No footer */}
+
       <CartDrawer />
 
       {/* Global audio player — bottom left, all pages */}

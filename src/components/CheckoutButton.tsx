@@ -12,7 +12,7 @@ export default function CheckoutButton() {
     reference,
     email: 'customer@example.com',
     amount: cartTotal * 100,
-    publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_placeholder',
+    publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_placeholder_add_your_key',
   }
 
   const onSuccess = async () => {
