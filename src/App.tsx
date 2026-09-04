@@ -28,33 +28,43 @@ function SpotifyIcon() {
 function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [playing, setPlaying] = useState(false)
-  const [interacted, setInteracted] = useState(false)
+  const hasInteracted = useRef(false)
 
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
     audio.volume = 0.4
     audio.loop = true
-    // Start muted so browser allows autoplay
-    audio.muted = true
-    audio.play().catch(() => {})
 
-    // On first user interaction, unmute and play
-    const handleFirstInteraction = () => {
-      if (!interacted) {
-        audio.muted = false
-        audio.play().catch(() => {})
-        setPlaying(true)
-        setInteracted(true)
+    const startAudio = () => {
+      if (hasInteracted.current) return
+      hasInteracted.current = true
+      audio.muted = false
+      const playPromise = audio.play()
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setPlaying(true))
+          .catch(() => {})
       }
     }
 
-    window.addEventListener('click', handleFirstInteraction, { once: true })
-    window.addEventListener('touchstart', handleFirstInteraction, { once: true })
+    // Try to play immediately (works if user already interacted)
+    audio.muted = false
+    audio.play()
+      .then(() => { setPlaying(true); hasInteracted.current = true })
+      .catch(() => {
+        // Autoplay blocked — wait for first interaction
+        audio.muted = true
+        audio.play().catch(() => {})
+        document.addEventListener('click', startAudio, { once: true })
+        document.addEventListener('touchstart', startAudio, { once: true })
+        document.addEventListener('keydown', startAudio, { once: true })
+      })
 
     return () => {
-      window.removeEventListener('click', handleFirstInteraction)
-      window.removeEventListener('touchstart', handleFirstInteraction)
+      document.removeEventListener('click', startAudio)
+      document.removeEventListener('touchstart', startAudio)
+      document.removeEventListener('keydown', startAudio)
     }
   }, [])
 
@@ -77,8 +87,8 @@ function AudioPlayer() {
       <button
         onClick={toggle}
         className="fixed bottom-6 left-6 z-50 w-11 h-11 bg-black text-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800 transition-colors cursor-pointer"
-        aria-label={playing ? 'Mute music' : 'Play music'}
-        title={playing ? 'Mute music' : 'Play music'}
+        aria-label={playing ? 'Pause music' : 'Play music'}
+        title={playing ? 'Pause music' : 'Play music'}
       >
         {playing ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
       </button>
