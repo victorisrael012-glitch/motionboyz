@@ -6,7 +6,8 @@ import { NavMenu } from './components/Navbar'
 import ProductGrid from './components/ProductGrid'
 import CartDrawer from './components/CartDrawer'
 import heroImage from './assets/hero.jpeg'
-import migosSong from './assets/migos.wav'
+
+const MIGOS_AUDIO = '/migos.wav'
 
 const SPOTIFY_URL = 'https://open.spotify.com/artist/76irK3Smknj0BHypJS65Ux?si=Ei4fBHmoSPeSYBjc7sG5xA&utm_source=copy-link'
 
@@ -49,7 +50,7 @@ function AudioPlayer() {
 
   return (
     <>
-      <audio ref={audioRef} src={migosSong} preload="auto" />
+      <audio ref={audioRef} src={MIGOS_AUDIO} preload="auto" />
       <button
         onClick={toggle}
         className="fixed bottom-6 left-6 z-50 w-11 h-11 bg-black text-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800 transition-colors cursor-pointer"
