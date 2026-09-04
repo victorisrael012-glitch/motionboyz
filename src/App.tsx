@@ -39,10 +39,11 @@ function AudioPlayer() {
     audio.muted = true
     audio.play().catch(() => {})
 
-    // On first user interaction, unmute and mark as playing
+    // On first user interaction, unmute and play
     const handleFirstInteraction = () => {
       if (!interacted) {
         audio.muted = false
+        audio.play().catch(() => {})
         setPlaying(true)
         setInteracted(true)
       }
@@ -65,7 +66,7 @@ function AudioPlayer() {
       setPlaying(false)
     } else {
       audio.muted = false
-      audio.play()
+      audio.play().catch(() => {})
       setPlaying(true)
     }
   }
