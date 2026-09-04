@@ -1,5 +1,6 @@
 import { X, ShoppingCart } from 'lucide-react'
 import { useCart } from '../context/CartContext'
+import logoImg from '../assets/logo.jpg'
 
 interface NavMenuProps {
   isOpen: boolean
@@ -25,9 +26,12 @@ export function NavMenu({ isOpen, onClose }: NavMenuProps) {
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Close button */}
+        {/* Logo + close button */}
         <div className="flex items-center justify-between px-6 py-6 border-b border-white/10">
-          <span className="text-white text-xl font-black tracking-widest">MOTIONBOYZ</span>
+          <div className="flex items-center gap-3">
+            <img src={logoImg} alt="MOTIONBOYZ logo" className="w-10 h-10 rounded-full object-cover" />
+            <span className="text-white text-lg font-black tracking-widest">MOTIONBOYZ</span>
+          </div>
           <button
             onClick={onClose}
             className="text-white hover:text-gray-300 transition-colors cursor-pointer"
