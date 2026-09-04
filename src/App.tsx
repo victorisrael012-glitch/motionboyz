@@ -24,16 +24,37 @@ function SpotifyIcon() {
   )
 }
 
-// Global audio player — persists across the whole app
+// Global audio player — starts muted, unmutes on first user interaction
 function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [playing, setPlaying] = useState(false)
+  const [interacted, setInteracted] = useState(false)
 
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
     audio.volume = 0.4
     audio.loop = true
+    // Start muted so browser allows autoplay
+    audio.muted = true
+    audio.play().catch(() => {})
+
+    // On first user interaction, unmute and mark as playing
+    const handleFirstInteraction = () => {
+      if (!interacted) {
+        audio.muted = false
+        setPlaying(true)
+        setInteracted(true)
+      }
+    }
+
+    window.addEventListener('click', handleFirstInteraction, { once: true })
+    window.addEventListener('touchstart', handleFirstInteraction, { once: true })
+
+    return () => {
+      window.removeEventListener('click', handleFirstInteraction)
+      window.removeEventListener('touchstart', handleFirstInteraction)
+    }
   }, [])
 
   const toggle = () => {
@@ -43,6 +64,7 @@ function AudioPlayer() {
       audio.pause()
       setPlaying(false)
     } else {
+      audio.muted = false
       audio.play()
       setPlaying(true)
     }
