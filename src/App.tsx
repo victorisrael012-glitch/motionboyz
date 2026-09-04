@@ -28,7 +28,7 @@ function SpotifyIcon() {
 function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [playing, setPlaying] = useState(false)
-  const hasInteracted = useRef(false)
+  const hasStarted = useRef(false)
 
   useEffect(() => {
     const audio = audioRef.current
@@ -37,23 +37,20 @@ function AudioPlayer() {
     audio.loop = true
 
     const startAudio = () => {
-      if (hasInteracted.current) return
-      hasInteracted.current = true
+      if (hasStarted.current) return
+      hasStarted.current = true
       audio.muted = false
-      const playPromise = audio.play()
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => setPlaying(true))
-          .catch(() => {})
-      }
+      audio.play()
+        .then(() => setPlaying(true))
+        .catch(() => {})
     }
 
-    // Try to play immediately (works if user already interacted)
+    // Try unmuted first
     audio.muted = false
     audio.play()
-      .then(() => { setPlaying(true); hasInteracted.current = true })
+      .then(() => { hasStarted.current = true; setPlaying(true) })
       .catch(() => {
-        // Autoplay blocked — wait for first interaction
+        // Blocked — wait for interaction, play muted in background
         audio.muted = true
         audio.play().catch(() => {})
         document.addEventListener('click', startAudio, { once: true })
@@ -71,6 +68,7 @@ function AudioPlayer() {
   const toggle = () => {
     const audio = audioRef.current
     if (!audio) return
+    // Always use a single audio element — no overlap possible
     if (playing) {
       audio.pause()
       setPlaying(false)
@@ -78,6 +76,7 @@ function AudioPlayer() {
       audio.muted = false
       audio.play().catch(() => {})
       setPlaying(true)
+      hasStarted.current = true
     }
   }
 
